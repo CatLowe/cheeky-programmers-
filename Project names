@@ -1,0 +1,9 @@
+1. Use bio3d package to identify binding sites from pdb files
+
+2. Use bio3d to give an output of residue names involved in the binding site
+
+3. Select the residues from the identified binding site from a pdb file
+
+4. Rewrite a column of pdb file (using Plevin code) to isolte those residues 
+
+5. Get an output that represents the structure of the binding site found 
