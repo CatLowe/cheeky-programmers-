@@ -22,8 +22,9 @@ pdb_2 <- read.pdb("3dfr")
 bs_b <- binding.site(pdb_2)
 print(bs$resnames)
 
-
+# Select atoms in original pdb file that correspond to found binding site
 inds <- atom.select (pdb, resno = bs$resno)
 pdb3 <- trim.pdb(pdb, inds)
 
+#write new pdb file
 write.pdb(pdb3, file= "1bzm_bindingsite.pdb") 
