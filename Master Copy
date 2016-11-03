@@ -22,9 +22,13 @@ pdb_2 <- read.pdb("3dfr")
 bs_b <- binding.site(pdb_2)
 print(bs$resnames)
 
-# Select atoms in original pdb file that correspond to found binding site
+#select the binding site and trim the pdb file to just the residues in the binding site
 inds <- atom.select (pdb, resno = bs$resno)
 pdb3 <- trim.pdb(pdb, inds)
 
-#write new pdb file
-write.pdb(pdb3, file= "1bzm_bindingsite.pdb") 
+write.pdb(pdb3, file= "1bzm_bindingsite.pdb")
+
+blast_search <- blast.pdb(pdb)
+limit_id <- blast_search$identity?
+limit <- c(limit_id = 50:60)?
+limit_id ?
