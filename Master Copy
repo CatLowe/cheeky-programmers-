@@ -33,3 +33,13 @@ print(blast$hit.tbl)
 limit_id <- blast$hit.tbl$identity
 limit_id
 limit_id[limit_id<=60 & limit_id>=50]
+
+pdb <- read.pdb("1bzm")
+blast_search <- blast.pdb(pdb)
+print(blast$hit.tbl)
+a <- blast$hit.tbl$identity
+b <- blast$hit.tbl$queryid
+limit_id <- cbind(a,b)
+limit_id
+limit <- limit_id[limit_id<=60 & limit_id>=50]
+limit
