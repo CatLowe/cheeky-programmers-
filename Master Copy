@@ -30,6 +30,13 @@ write.pdb(pdb3, file= "1bzm_bindingsite.pdb")
 
 blast_search <- blast.pdb(pdb)
 print(blast$hit.tbl)
-limit_id <- blast$hit.tbl$identity
+limit_id <- cbind2(blast$hit.tbl$identity, blast$hit.tbl$subjectids)
 limit_id
-limit_id[limit_id<=60 & limit_id>=50]
+limit_id<-limit_id[limit_id<=60 & limit_id>=50]
+protid
+
+protid<-cbind2(limit, data.frame(blast$hit.tbl$identity,blast$hit.tbl$subjectids))
+
+protid <- cbind(limit, data.frame(A=blast$hit.tbl$identity, stringasFactors=blast$hit.tbl$subjectids))
+
+protid
