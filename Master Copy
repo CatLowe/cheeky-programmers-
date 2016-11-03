@@ -32,3 +32,10 @@ blast_search <- blast.pdb(pdb)
 limit_id <- blast_search$identity?
 limit <- c(limit_id = 50:60)?
 limit_id ?
+
+pdb<-read.pdb("1gyc")
+blast_search <- blast.pdb(pdb)
+limit_id <- head(blast_search$hit.tbl)
+proteins<-limit_id$identity
+ptns<-proteins[c(x<80)]
+ptns 
