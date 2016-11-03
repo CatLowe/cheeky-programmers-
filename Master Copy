@@ -29,6 +29,7 @@ pdb3 <- trim.pdb(pdb, inds)
 write.pdb(pdb3, file= "1bzm_bindingsite.pdb")
 
 blast_search <- blast.pdb(pdb)
-limit_id <- blast_search$identity?
-limit <- c(limit_id = 50:60)?
-limit_id ?
+print(blast$hit.tbl)
+limit_id <- blast$hit.tbl$identity
+limit_id
+limit_id[limit_id<=60 & limit_id>=50]
