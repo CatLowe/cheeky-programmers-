@@ -44,12 +44,12 @@ limit_id
 limit <- limit_id[limit_id<=60 & limit_id>=50]
 limit
 
-pdb <- read.pdb("1bzm")
+pdb <- read.pdb("1bmz")
 blast_search <- blast.pdb(pdb)
-print(blast$hit.tbl)
-identity <- blast$hit.tbl$identity
-pdbid <- blast$hit.tbl$pdb.id
+print(blast_search$hit.tbl)
+dentity <- blast_search$hit.tbl$identity
+pdbid <- blast_search$hit.tbl$pdb.id
 result <- cbind(identity,pdbid)
-limit_id
-limit <- subset(result,evalue<=60 & evalue>=50)
+result
+limit <- subset(result,identity<=60 & identity>=50)
 limit
