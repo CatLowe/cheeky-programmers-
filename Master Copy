@@ -47,9 +47,9 @@ limit
 pdb <- read.pdb("1bzm")
 blast_search <- blast.pdb(pdb)
 print(blast$hit.tbl)
-a <- blast$hit.tbl$identity
-b <- blast$hit.tbl$subjectids
-result <- cbind(a,b)
+evalue <- blast$hit.tbl$identity
+pdbid <- blast$hit.tbl$subjectids
+result <- cbind(evalue,pdbid)
 limit_id
 limit <- subset(result,a<=60 & a>=50)
 limit
