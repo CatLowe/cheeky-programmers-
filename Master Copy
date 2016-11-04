@@ -52,5 +52,4 @@ b <- blast$hit.tbl$subjectids
 result <- cbind(a,b)
 limit_id
 limit <- subset(result,a<=60 & a>=50)
-narrow
 limit
