@@ -51,5 +51,5 @@ evalue <- blast$hit.tbl$identity
 pdbid <- blast$hit.tbl$pdb.id
 result <- cbind(evalue,pdbid)
 limit_id
-limit <- subset(result,a<=60 & a>=50)
+limit <- subset(result,evalue<=60 & evalue>=50)
 limit
