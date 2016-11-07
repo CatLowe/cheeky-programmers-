@@ -47,7 +47,7 @@ limit
 pdb <- read.pdb("1bmz")
 blast_search <- blast.pdb(pdb)
 print(blast_search$hit.tbl)
-dentity <- blast_search$hit.tbl$identity
+identity <- blast_search$hit.tbl$identity
 pdbid <- blast_search$hit.tbl$pdb.id
 result <- cbind(identity,pdbid)
 result
