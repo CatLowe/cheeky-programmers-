@@ -47,9 +47,12 @@ limit
 pdb <- read.pdb("1bmz")
 blast_search <- blast.pdb(pdb)
 print(blast_search$hit.tbl)
+#Select the columns of data that we are extracting from the blast search data
 identity <- blast_search$hit.tbl$identity
 pdbid <- blast_search$hit.tbl$pdb.id
+#bind the two columns of data together
 result <- cbind(identity,pdbid)
 result
+#Limit the identity of the blast search to be <=60 and >=50, and just print these
 limit <- subset(result,identity<=60 & identity>=50)
 limit
