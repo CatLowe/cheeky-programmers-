@@ -26,25 +26,10 @@ print(bs$resnames)
 inds <- atom.select (pdb, resno = bs$resno)
 pdb3 <- trim.pdb(pdb, inds)
 
+#write new pdb file
 write.pdb(pdb3, file= "1bzm_bindingsite.pdb")
 
-blast_search <- blast.pdb(pdb)
-print(blast$hit.tbl)
-limit_id <- blast$hit.tbl$identity
-limit_id
-limit_id[limit_id<=60 & limit_id>=50]
-
-pdb <- read.pdb("1bzm")
-blast_search <- blast.pdb(pdb)
-print(blast$hit.tbl)
-a <- blast$hit.tbl$identity
-b <- blast$hit.tbl$queryid
-limit_id <- cbind(a,b)
-limit_id
-limit <- limit_id[limit_id<=60 & limit_id>=50]
-limit
-
-pdb <- read.pdb("1bmz")
+#blast search pdb file
 blast_search <- blast.pdb(pdb)
 print(blast_search$hit.tbl)
 #Select the columns of data that we are extracting from the blast search data
@@ -56,3 +41,58 @@ result
 #Limit the identity of the blast search to be <=60 and >=50, and just print these
 limit <- subset(result,identity<=60 & identity>=50)
 limit
+pdb_ids <- limit[,c("pdbid")]
+
+#retrieve a random sample  of pdb files from limited selection
+rdm <-sample(pdb_ids,4)
+rdm
+#rewrite output to gain readable files
+no_chain <- gsub('.{2}$','',rdm)
+no_chain
+
+#read new files separate new files 
+output_files <- lapply (no_chain, read.pdb)
+
+output_file1 <- output_files[[1]]
+write.pdb(output_file1, file= "blast1_wholeprotein.pdb")
+
+output_file2 <- output_files[[2]]
+write.pdb(output_file2, file= "blast2_wholeprotein.pdb")
+
+output_file3 <- output_files[[3]]
+write.pdb(output_file3, file= "blast3_wholeprotein.pdb")
+
+output_file4 <- output_files[[4]]
+write.pdb(output_file4, file= "blast4_wholeprotein.pdb")
+
+output_file5 <- output_files[[5]]
+write.pdb(output_file5, file= "blast5_wholeprotein.pdb")
+
+#find binding sites in new pdb files
+bs_1 <- lapply (output_files, binding.site)
+
+#edit pdb files for each output to create new selection of files 
+output_1 <- bs_1[[1]]
+bs_output_1 <- atom.select (pdb, resno= output_1$resno)
+pdb_output_1 <- trim.pdb(pdb, bs_output_1)
+write.pdb(pdb_output_1, file= "blast1_bindingsite.pdb")
+
+output_2 <- bs_1[[2]]
+bs_output_2 <- atom.select (pdb, resno= output_2$resno)
+pdb_output_2 <- trim.pdb(pdb, bs_output_2)
+write.pdb(pdb_output_2, file= "blast2_bindingsite.pdb")
+
+output_3 <- bs_1[[3]]
+bs_output_3 <- atom.select (pdb, resno= output_3$resno)
+pdb_output_3 <- trim.pdb(pdb, bs_output_3)
+write.pdb(pdb_output_3, file= "blast3_bindingsite.pdb")
+
+output_4 <- bs_1[[4]]
+bs_output_4 <- atom.select (pdb, resno= output_4$resno)
+pdb_output_4 <- trim.pdb(pdb, bs_output_4)
+write.pdb(pdb_output_4, file= "blast4_bindingsite.pdb")
+
+output_5 <- bs_1[[5]]
+bs_output_5 <- atom.select (pdb, resno= output_5$resno)
+pdb_output_5 <- trim.pdb(pdb, bs_output_5)
+write.pdb(pdb_output_5, file= "blast5_bindingsite.pdb")
