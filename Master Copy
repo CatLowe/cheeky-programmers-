@@ -35,3 +35,18 @@ limit_id
 limit_id[limit_id<=60 & limit_id>=50]
 
 
+
+####################################GUI
+#requires gWidgets
+#requires gWidgetstcltk in particular as this works better on Windows
+install.packages("gWidgetstcltk")
+library("gWidgetstcltk")
+
+win <- gwindow(title = "Cheeky programmers", visible=TRUE, name=title,
+               width = NULL, height = NULL, parent=NULL)
+group <- ggroup(horizontal = FALSE, container=win)
+obj <- glabel("Welcome to our program!", container = group)
+obj <- gbutton("Fiddlesticks", container = group)
+obj <- gcombobox(c("Chocolate","Asparagus"), container=group)
+obj <- gedit("Pretzels", container=group)
+obj <- gtext("Nice cream", container=group, font.attr=list(style="bold"))
