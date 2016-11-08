@@ -1,49 +1,41 @@
-# require bio3d package
-install.packages(bio3d)
-#use function read.pdb to read a pdb file
-pdb <- read.pdb("1a52") # read G-protein structure
 
-#use function binding.site to identify a binding site within loaded pdb file
-bs <- binding.site(pdb)
-
-#use function print(bs$resnames) to print names of residues involved in indentified binding site
-print(bs$resnames) # residue names of identified binding site
-
-#Examples
-pdb <- read.pdb("1bzm")
-bs <- binding.site(pdb)
-print(bs$resnames)
-
-pdb_1 <- read.pdb("1pph")
-bs_a <- binding.site(pdb_1)
-print(bs_a$resnames)
-
-pdb_2 <- read.pdb("3dfr")
-bs_b <- binding.site(pdb_2)
-print(bs$resnames)
-
-#select the binding site and trim the pdb file to just the residues in the binding site
-inds <- atom.select (pdb, resno = bs$resno)
-pdb3 <- trim.pdb(pdb, inds)
-
-write.pdb(pdb3, file= "1bzm_bindingsite.pdb")
-
+#read pdb file 
+pdb <- read.pdb("1bmz")
 blast_search <- blast.pdb(pdb)
-limit_id <- blast_search$identity?
-limit <- c(limit_id = 50:60)?
-limit_id ?
+print(blast_search$hit.tbl)
 
-pdb<-read.pdb("1gyc")
-blast_search <- blast.pdb(pdb)
-limit_id <- head(blast_search$hit.tbl)
-proteins<-limit_id$identity
-ptns<-proteins[c(x<80)]
-ptns 
+#Select the columns of data that we are extracting from the blast search data
+identity <- blast_search$hit.tbl$identity
+pdbid <- blast_search$hit.tbl$pdb.id
 
-#select only the pdb ids within the limit
+#bind the two columns of data together
+result <- cbind(identity,pdbid)
+result
+
+#Limit the identity of the blast search to be <=60 and >=50, and just print these
+limit <- subset(result,identity<=60 & identity>=50)
+limit
+
+#select pdb ids
 pdbid_select<-limit[,c("pdbid")]
 pdbid_select
 
-#select 5 random pdb ids from list
+#select 5 random pdb files
 rdm<-sample(pdbid_rdm, 5)
 rdm
+
+#remove chain number 
+no_chain<-gsub('.{2}$','',rdm)
+no_chain
+
+#read pdb files of BLAST search 
+multiple<-lapply(no_chain,read.pdb)
+
+#take binding site from indivisual pdb file
+bs<-lapply(multiple, binding.site)
+bsoutput_1<-bs[[1]]
+bsatoms_1<-atom.select(pdb, resno = bsoutput_1$resno)
+binding_1<-trim.pdb(pdb,bsatoms_1)
+
+#write.pdb
+write.pdb(binding_1,file = "1SN2_binding_site.pdb")
