@@ -39,3 +39,11 @@ limit_id <- head(blast_search$hit.tbl)
 proteins<-limit_id$identity
 ptns<-proteins[c(x<80)]
 ptns 
+
+#select only the pdb ids within the limit
+pdbid_select<-limit[,c("pdbid")]
+pdbid_select
+
+#select 5 random pdb ids from list
+rdm<-sample(pdbid_rdm, 5)
+rdm
