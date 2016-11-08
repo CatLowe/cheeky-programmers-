@@ -96,3 +96,11 @@ output_5 <- bs_1[[5]]
 bs_output_5 <- atom.select (pdb, resno= output_5$resno)
 pdb_output_5 <- trim.pdb(pdb, bs_output_5)
 write.pdb(pdb_output_5, file= "blast5_bindingsite.pdb")
+
+a<-read.pdb("blast1_wholeprotein.pdb")
+b<-read.pdb("blast2_wholeprotein.pdb")
+c<-read.pdb("blast3_wholeprotein.pdb")
+d<-read.pdb("blast4_wholeprotein.pdb")
+e<-read.pdb("blast5_wholeprotein.pdb")
+aln<-struct.ala(a, b, c, d, e)
+
