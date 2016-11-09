@@ -10,7 +10,7 @@ bs <- binding.site(pdb)
 print(bs$resnames) # residue names of identified binding site
 
 #Examples
-pdb <- read.pdb("1bzm")
+pdb <- read.pdb("1a52")
 bs <- binding.site(pdb)
 print(bs$resnames)
 
@@ -38,19 +38,29 @@ pdbid <- blast_search$hit.tbl$pdb.id
 #bind the two columns of data together
 result <- cbind(identity,pdbid)
 result
+
 #Limit the identity of the blast search to be <=60 and >=50, and just print these
 limit <- subset(result,identity<=60 & identity>=50)
 limit
 pdb_ids <- limit[,c("pdbid")]
 
+#if function for if original limit produces too small a sample size, increase limit size
+number <- length(pdb_ids)
+if (number > 5) {
+  rdm <-sample(pdb_ids,5)
+} else {
+  limit <- subset(result,identity<=65 & identity>=50)
+  pdb_ids <- limit[,c("pdbid")]
+}
+
 #retrieve a random sample  of pdb files from limited selection
-rdm <-sample(pdb_ids,4)
-rdm
+#rdm <-sample(pdb_ids,4)
+#rdm
 #rewrite output to gain readable files
 no_chain <- gsub('.{2}$','',rdm)
 no_chain
 
-#read new files separate new files 
+#read new files separate new files
 output_files <- lapply (no_chain, read.pdb)
 
 output_file1 <- output_files[[1]]
@@ -65,13 +75,11 @@ write.pdb(output_file3, file= "blast3_wholeprotein.pdb")
 output_file4 <- output_files[[4]]
 write.pdb(output_file4, file= "blast4_wholeprotein.pdb")
 
-output_file5 <- output_files[[5]]
-write.pdb(output_file5, file= "blast5_wholeprotein.pdb")
 
 #find binding sites in new pdb files
 bs_1 <- lapply (output_files, binding.site)
 
-#edit pdb files for each output to create new selection of files 
+#edit pdb files for each output to create new selection of files
 output_1 <- bs_1[[1]]
 bs_output_1 <- atom.select (pdb, resno= output_1$resno)
 pdb_output_1 <- trim.pdb(pdb, bs_output_1)
@@ -97,10 +105,20 @@ bs_output_5 <- atom.select (pdb, resno= output_5$resno)
 pdb_output_5 <- trim.pdb(pdb, bs_output_5)
 write.pdb(pdb_output_5, file= "blast5_bindingsite.pdb")
 
-a<-read.pdb("blast1_wholeprotein.pdb")
-b<-read.pdb("blast2_wholeprotein.pdb")
-c<-read.pdb("blast3_wholeprotein.pdb")
-d<-read.pdb("blast4_wholeprotein.pdb")
-e<-read.pdb("blast5_wholeprotein.pdb")
-aln<-struct.aln(a, b, c, d, e)
+#alternative
+#a<-read.pdb("blast1_wholeprotein.pdb")
+#b<-read.pdb("blast2_wholeprotein.pdb")
+#c<-read.pdb("blast3_wholeprotein.pdb")
+#d<-read.pdb("blast4_wholeprotein.pdb")
+#e<-read.pdb("blast5_wholeprotein.pdb")
+#aln<-struct.aln(a, c)
+
+#obtaining a matrix of rmsd values
+raw.files <- get.pdb(no_chain)
+files <- pdbsplit(raw.files, no_chain)
+pdbs <- pdbaln(files)
+pdbs$id <- basename.pdb(pdbs$id)
+seqidentity(pdbs)
+rmsd(pdbs, fit = TRUE)
+
 
