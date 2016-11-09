@@ -102,5 +102,5 @@ b<-read.pdb("blast2_wholeprotein.pdb")
 c<-read.pdb("blast3_wholeprotein.pdb")
 d<-read.pdb("blast4_wholeprotein.pdb")
 e<-read.pdb("blast5_wholeprotein.pdb")
-aln<-struct.ala(a, b, c, d, e)
+aln<-struct.aln(a, b, c, d, e)
 
