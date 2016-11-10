@@ -113,7 +113,7 @@ write.pdb(pdb_output_5, file= "blast5_bindingsite.pdb")
 #e<-read.pdb("blast5_wholeprotein.pdb")
 #aln<-struct.aln(a, c)
 
-#obtaining a matrix of rmsd values
+#obtaining a matrix of rmsd values and labelling 
 raw.files <- get.pdb(rdm)
 files <- pdbsplit(raw.files, rdm)
 pdbs <- pdbaln(files)
@@ -123,6 +123,20 @@ rmsdvalues <-rmsd(pdbs, fit = TRUE)
 rownames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5])
 colnames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5])
 rmsdvalues
+
+#obtaing RMSD values for binding site and labelling
+bsids<- c("blast1_bindingsite.pdb","blast2_bindingsite.pdb","blast3_bindingsite.pdb","blast4_bindingsite.pdb","blast5_bindingsite.pdb")
+raw.files <- get.pdb(bsids)
+files <- pdbsplit(raw.files, bsids)
+pdbs <- pdbaln(bsids)
+pdbs$id <- basename.pdb(pdbs$id)
+seqidentity(pdbs)
+rmsdvaluesbs <-rmsd(, fit = TRUE) 
+rmsdvaluesbs <-rmsd(pdbs, fit = TRUE)
+rmsdvaluesbs
+rownames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5])
+colnames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5])
+rmsdvaluesbs
 
 ##
 ##
