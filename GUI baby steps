@@ -116,3 +116,15 @@ ggraphics(container = nb, label="plot")
  gbutton("ok", container = g, handler = function(h, ...) cat("do it\n"))
  
  ## End(Not run)
+ 
+ 
+ 
+ ##brief functionality
+ w <- gwindow("Two widgets")
+g <- ggroup(container = w)
+widget1 <- gbutton("Click me to update the counter", container=g,
+                 handler = function(h,...) {
+                         oldVal <- svalue(widget2)
+                         svalue(widget2) <- as.numeric(oldVal) + 1
+                         })
+  widget2 <- glabel(0, container=g)
