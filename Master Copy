@@ -1,42 +1,3 @@
-# require bio3d package
-install.packages(bio3d)
-#use function read.pdb to read a pdb file
-pdb <- read.pdb("1a52") # read G-protein structure
-
-#use function binding.site to identify a binding site within loaded pdb file
-bs <- binding.site(pdb)
-
-#use function print(bs$resnames) to print names of residues involved in indentified binding site
-print(bs$resnames) # residue names of identified binding site
-
-#Examples
-pdb <- read.pdb("1bzm")
-bs <- binding.site(pdb)
-print(bs$resnames)
-
-pdb_1 <- read.pdb("1pph")
-bs_a <- binding.site(pdb_1)
-print(bs_a$resnames)
-
-pdb_2 <- read.pdb("3dfr")
-bs_b <- binding.site(pdb_2)
-print(bs$resnames)
-
-#select the binding site and trim the pdb file to just the residues in the binding site
-inds <- atom.select (pdb, resno = bs$resno)
-pdb3 <- trim.pdb(pdb, inds)
-
-write.pdb(pdb3, file= "1bzm_bindingsite.pdb")
-
-blast_search <- blast.pdb(pdb)
-print(blast$hit.tbl)
-limit_id <- blast$hit.tbl$identity
-limit_id
-limit_id[limit_id<=60 & limit_id>=50]
-
-
-
-####################################GUI
 #requires gWidgets
 #requires gWidgetstcltk in particular as this works better on Windows
 install.packages("gWidgetstcltk")
@@ -46,7 +7,20 @@ win <- gwindow(title = "Cheeky programmers", visible=TRUE, name=title,
                width = NULL, height = NULL, parent=NULL)
 group <- ggroup(horizontal = FALSE, container=win)
 obj <- glabel("Welcome to our program!", container = group)
-obj <- gbutton("Fiddlesticks", container = group)
-obj <- gcombobox(c("Chocolate","Asparagus"), container=group)
-obj <- gedit("Pretzels", container=group)
-obj <- gtext("Nice cream", container=group, font.attr=list(style="bold"))
+obj <- glabel("Type your PDB code here:", container = group)
+obj <- gedit("", container=group)
+obj <- gbutton("Go", container = group)
+obj <- glabel("Identified binding sites of your PDB file:", container = group)
+obj <- gcombobox(c(bs$resnames), container=group)
+obj <- glabel("BLAST results on your PDB file with an identity of 65<x>50, which will be compared to your PDB file:", container = group)
+obj <- glabel(c(no_chain), container=group)
+obj <- glabel("Identified binding sites of", glabel(c(a)), container = group)
+obj <- gcombobox(c(output_1$resnames), container=group)
+obj <- glabel("Identified binding sites of BLAST hit number 2:", container = group)
+obj <- gcombobox(c(output_2$resnames), container=group)
+obj <- glabel("Identified binding sites of BLAST hit number 3:", container = group)
+obj <- gcombobox(c(output_3$resnames), container=group)
+obj <- glabel("Identified binding sites of BLAST hit number 4:", container = group)
+obj <- gcombobox(c(output_4$resnames), container=group)
+obj <- glabel("Identified binding sites of BLAST hit number 5:", container = group)
+obj <- gcombobox(c(output_5$resnames), container=group)
