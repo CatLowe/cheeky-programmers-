@@ -122,3 +122,21 @@ seqidentity(pdbs)
 rmsd(pdbs, fit = TRUE)
 
 
+##
+##
+##
+##
+##
+##
+##GUI DEVELOPMENT
+##First draft of GUI
+install.packages(gWidgetstcltk)
+win <- gwindow(title = "Cheeky programmers", visible=TRUE, name=title,
+               width = NULL, height = NULL, parent=NULL)
+group <- ggroup(horizontal = FALSE, container=win)
+obj <- glabel("Welcome to our program!", container = group)
+obj <- glabel("Please type your PDB code into the box.", container = group) 
+obj <- gedit("PDB code", container=group)
+obj <- gbutton("Go", container = group)
+obj <- gcombobox(c("Chocolate","Asparagus"), container=group)
+obj <- gtext("Nice cream", container=group, font.attr=list(style="bold"))
