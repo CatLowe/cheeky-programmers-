@@ -1,0 +1,118 @@
+#NB due to us using gWidgets tcltk, not all parts of it work
+
+install.packages("gWidgets")
+library(gWidgets)
+install.packages("gWidgetstcltk")
+library("gWidgetstcltk")
+
+#widgets
+obj <- gbutton("Hello world", container = gwindow())
+obj <- glabel("Hello world", container = gwindow())
+obj <- gedit("HEllo world", container = gwindow())
+obj <- gtext("Hello world", container = gwindow())
+
+obj <- gradio(c("helloooooooooooooooooooooooooooooooooooooooooooooooooooo","world"), container = gwindow())
+obj <- gcombobox(c("hello","world"), container = gwindow())
+obj <- gcombobox(c("hello","world"), editable=TRUE, container=gwindow())
+obj <- gtable(c("hello","world"), container=gwindow())
+
+obj <- gcheckboxgroup(c("hello","world"), container=gwindow())
+
+obj <- gslider(from=0, to =7734, by =100, value=0,
+               container=gwindow())
+obj <- gspinbutton(from=0, to =7734, by =100, value=0,
+                   container = gwindow())
+
+#combine widgets into a container
+win <- gwindow("Cheeky programmers", visible=TRUE)
+group <- ggroup(horizontal = FALSE, container=win)
+obj <- gbutton("Info on the program", container = group,
+               handler = function(h,...) gmessage("Using functionality from other packages,
+   we "))
+obj <- glabel("Hello...", container=group,
+              handler=function(h,...) gmessage("world"))
+obj <- gcombobox(c("Hello","world"), container=group)
+obj <- gedit("Hello world", container=group)
+obj <- gtext("Hello world", container=group, font.attr=list(style="bold"))
+
+#maknig a confirmation dialogue
+confirmDialog <- function(message, handler=NULL)  {
+  window <- gwindow("Confirm")
+  group <- ggroup(container = window)
+  gimage("info", dirname="stock", size="dialog", container = group)
+#a group for the message and buttons
+  inner.group <- ggroup(horizontal = FALSE, container = group)
+  glabel(message, container = inner.group, expand=TRUE)
+#a group to organise the buttons
+  button.group <- ggroup(container = inner.group)
+#Push buttons to right
+  addSpring(button.group)
+  gbutton("ok", handler=handler, container=button.group)
+  gbutton("cancel", handler= function(h,...) dispose(window),
+          container=button.group)
+  return()
+}
+#why doesnt this work?
+
+
+confirmDialog("This space for rent", handler = function(h,...) {
+  print("what to do... [Change accordingly]")
+  ##In this instance dispose finds its parent window and closes it
+  dispose(h$obj)
+})
+
+
+#8.2 BrowseEnv
+lstObjects <- function(envir = .GlobalEnv, pattern) {
+  objlist <- ls(envir=envir, pattern=pattern)
+  objclass <- sapply(objlist, function(objName){
+    obj <- get(objName, envir=envir)
+    class(obj)[1]
+  })
+  data.frame(Name = I(objlist), Class = I(objclass))
+}
+browseEnv1 <- function(envir =.GlobalEnv, pattern) {
+  listOfObjects <- lstObjects(envir=envir, pattern)
+  gtable(listOfObjects, container = gwindow("browseEnv1"))
+}
+
+
+win <- gwindow("Plot notebook")
+group <- ggroup(horizontal = FALSE, container=win)
+nb <- gnotebook(container = group, expand=TRUE)
+ggraphics(container = nb, label="plot")
+
+
+
+> doPlot <- function() {
+ ## Set up main group
+ mainGroup <- ggroup(container=gwindow("doPlot example"))
+
+ ## The variable browser widget
+ gvarbrowser(container = mainGroup)
+
+ rightGroup <- ggroup(horizontal=FALSE, container=mainGroup)
+
+ ## The graphics device
+ ggraphics(container=rightGroup)
+ entry <- gedit("drop item here to be plotted", container=rightGroup)
+  24
+ adddroptarget(entry,handler = function(h,...) {
+ do.call("plot",list(svalue(h$dropdata),main=id(h$dropdata)))
+ })
+ }
+ doPlot()
+
+ 
+ 
+ ## Not run: 
+##### ## button group example
+ w <- gwindow("Button examples")
+ g <- ggroup(container = w)
+ addSpring(g)   ## push to right of widget
+ gbutton("help", container = g)
+ addSpace(g, 20) ## some breathing room
+ gbutton("cancel", container = g)
+ gbutton("ok", container = g, handler = function(h, ...) cat("do it\n"))
+ 
+ ## End(Not run)
