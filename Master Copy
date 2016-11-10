@@ -59,9 +59,18 @@ if (number > 5) {
 #rewrite output to gain readable files
 no_chain <- gsub('.{2}$','',rdm)
 no_chain
+a<-no_chain[1]
+b<-no_chain[2]
+c<-no_chain[3]
+d<-no_chain[4]
+e<-no_chain[5]
 
-#read new files separate new files
-output_files <- lapply (no_chain, read.pdb)
+#read new files separate new files 
+output_files <- lapply (a, read.pdb)
+output_files <- lapply (b, read.pdb)
+output_files <- lapply (c, read.pdb)
+output_files <- lapply (d, read.pdb)
+output_files <- lapply (e, read.pdb)
 
 output_file1 <- output_files[[1]]
 write.pdb(output_file1, file= "blast1_wholeprotein.pdb")
