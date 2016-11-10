@@ -114,13 +114,15 @@ write.pdb(pdb_output_5, file= "blast5_bindingsite.pdb")
 #aln<-struct.aln(a, c)
 
 #obtaining a matrix of rmsd values
-raw.files <- get.pdb(no_chain)
-files <- pdbsplit(raw.files, no_chain)
+raw.files <- get.pdb(rdm)
+files <- pdbsplit(raw.files, rdm)
 pdbs <- pdbaln(files)
 pdbs$id <- basename.pdb(pdbs$id)
 seqidentity(pdbs)
-rmsd(pdbs, fit = TRUE)
-
+rmsdvalues <-rmsd(pdbs, fit = TRUE)
+rownames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5])
+colnames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5])
+rmsdvalues
 
 ##
 ##
