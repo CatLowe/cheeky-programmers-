@@ -24,3 +24,17 @@ obj <- glabel("Identified binding sites of BLAST hit number 4:", container = gro
 obj <- gcombobox(c(output_4$resnames), container=group)
 obj <- glabel("Identified binding sites of BLAST hit number 5:", container = group)
 obj <- gcombobox(c(output_5$resnames), container=group)
+
+
+##Model of GUI window - nice layout to emulate
+ lst <- list()
+ lst$title <- "t.test()"
+ lst$help <- "t.test"
+ lst$variableTypes <- "univariate"
+ lst$action <- list(beginning="t.test(",ending=")")
+ lst$arguments$hypotheses$mu <-
+ list(type = "gedit",text=0,coerce.with=as.numeric)
+ lst$arguments$hypotheses$alternative <-
+  list(type="gradio", items=c("'two.sided'","'less'","'greater'")
+          )
+ ggenericwidget(lst, container=gwindow("One sample t test"))
