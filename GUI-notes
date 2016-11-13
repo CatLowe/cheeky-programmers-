@@ -1,0 +1,17 @@
+]##Put things on a line
+
+
+win <- gwindow("Cheeky programmers", visible=TRUE, width = NULL, height = NULL, parent=NULL)
+group <- ggroup(horizontal = FALSE, container=win)
+obj <- glabel("Welcome to our program! Insert preamble here", container = group)
+obj <- glabel("Please type your PDB code into the box.", container = group) 
+
+innergroup <- ggroup(container = group)
+gedit("PDB code", container = innergroup)
+gbutton("Go!", container = innergroup)#add handler to button?
+
+#obj <- gedit("PDB code", container=group)
+obj <- gcombobox(c("Chocolate","Asparagus"), container=group)
+#obj <- gtext("Nice cream", container=group, font.attr=list(style="bold"))
+
+#so here the thing that allows us to put things on a line is the innergroup function 
