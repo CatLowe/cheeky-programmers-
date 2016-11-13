@@ -110,36 +110,37 @@ bs_output_5 <- atom.select (pdb, resno= output_5$resno)
 pdb_output_5 <- trim.pdb(pdb, bs_output_5)
 write.pdb(pdb_output_5, file= "blast5_bindingsite.pdb")
 
-#alternative
-#a<-read.pdb("blast1_wholeprotein.pdb")
-#b<-read.pdb("blast2_wholeprotein.pdb")
-#c<-read.pdb("blast3_wholeprotein.pdb")
-#d<-read.pdb("blast4_wholeprotein.pdb")
-#e<-read.pdb("blast5_wholeprotein.pdb")
-#aln<-struct.aln(a, c)
 
-#obtaining a matrix of rmsd values and labelling 
-raw.files <- get.pdb(rdm)
-files <- pdbsplit(raw.files, rdm)
+#obtaining a matrix of rmsd values and labelling
+P <- "1a52_A"
+ids <- c(rdm, P)
+raw.files <- get.pdb(ids)
+files <- pdbsplit(raw.files, ids)
 pdbs <- pdbaln(files)
 pdbs$id <- basename.pdb(pdbs$id)
 seqidentity(pdbs)
 rmsdvalues <-rmsd(pdbs, fit = TRUE)
-rownames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5])
-colnames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5])
+rownames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5], "POI")
+colnames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5], "POI")
 rmsdvalues
 
 #obtaing RMSD values for binding site and labelling
-bsids<- c("blast1_bindingsite.pdb","blast2_bindingsite.pdb","blast3_bindingsite.pdb","blast4_bindingsite.pdb","blast5_bindingsite.pdb")
-raw.files <- get.pdb(bsids)
-files <- pdbsplit(raw.files, bsids)
-pdbs <- pdbaln(bsids)
-pdbs$id <- basename.pdb(pdbs$id)
-seqidentity(pdbs)
-rmsdvaluesbs <-rmsd(, fit = TRUE) 
-rmsdvaluesbs <-rmsd(pdbs, fit = TRUE)
+bsids<- c("blast1_bindingsite.pdb","blast2_bindingsite.pdb","blast3_bindingsite.pdb","blast4_bindingsite.pdb","blast5_bindingsite.pdb", "1bzm_bindingsite.pdb")
+raw.files_1 <- get.pdb(bsids)
+files_1 <- pdbsplit(raw.files_1, bsids)
+pdbs_1 <- pdbaln(bsids)
+pdbs_1$id <- basename.pdb(pdbs_1$id)
+seqidentity(pdbs_1)
+rmsdvaluesbs <-rmsd(pdbs_1, fit = TRUE)
 rmsdvaluesbs
-rownames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5])
-colnames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5])
-rmsdvaluesbs
+rownames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5], "POI")
+colnames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5],"POI")
+
+plot(rmsdvalues[6,1:5], rmsdvaluesbs[6,1:5],
+     main= "Comparitive RMSD values of whole protein structure and binding site residues",
+     xlab= "RMSD values for whole protein superposition (Å)",
+     ylab= "RMSD values for binding site superposition (Å)",
+     col= "orange", pch = 19, cex = 1, lty = "solid", lwd = 6)
+text(rmsdvalues[6,1:5], rmsdvaluesbs[6,1:5], labels= c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5]), cex= 0.7, col = "blue")
+
 
