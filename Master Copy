@@ -3,27 +3,43 @@
 install.packages("gWidgetstcltk")
 library("gWidgetstcltk")
 
-win <- gwindow(title = "Cheeky programmers", visible=TRUE, name=title,
+win <- gwindow(title = "Analysing PDB structures", 
+               visible=TRUE, name=title,
                width = NULL, height = NULL, parent=NULL)
 group <- ggroup(horizontal = FALSE, container=win)
-obj <- glabel("Welcome to our program!", container = group)
-obj <- glabel("Type your PDB code here:", container = group)
-obj <- gedit("", container=group)
-obj <- gbutton("Go", container = group)
-obj <- glabel("Identified binding sites of your PDB file:", container = group)
-obj <- gcombobox(c(bs$resnames), container=group)
-obj <- glabel("BLAST results on your PDB file with an identity of 65<x>50, which will be compared to your PDB file:", container = group)
-obj <- glabel(c(no_chain), container=group)
-obj <- glabel("Identified binding sites of", glabel(c(a)), container = group)
-obj <- gcombobox(c(output_1$resnames), container=group)
-obj <- glabel("Identified binding sites of BLAST hit number 2:", container = group)
-obj <- gcombobox(c(output_2$resnames), container=group)
-obj <- glabel("Identified binding sites of BLAST hit number 3:", container = group)
-obj <- gcombobox(c(output_3$resnames), container=group)
-obj <- glabel("Identified binding sites of BLAST hit number 4:", container = group)
-obj <- gcombobox(c(output_4$resnames), container=group)
-obj <- glabel("Identified binding sites of BLAST hit number 5:", container = group)
-obj <- gcombobox(c(output_5$resnames), container=group)
+obj1 <- glabel("Type your PDB code here:", container = group)
+innergroup <- ggroup(container = group)
+obj2 <- gedit((input<-""), container=innergroup)
+obj3 <- gbutton( "Go", container = innergroup, 
+                handler = function( h, ... ) {
+       gmessage( svalue( obj2 ), title = (pdb<- read.pdb(input)) )
+   } )
+obj4 <- glabel("Identified binding sites of your PDB file:", container = group)
+obj5 <- gcombobox(c(bs$resnames), container=group)
+obj6 <- glabel("BLAST results on your PDB file with an identity of 65<x>50, which will be compared to your PDB file:", container = group)
+obj7 <- glabel(c(no_chain), container=group)
+innergroup1 <- ggroup(container = group)
+obj8 <- glabel("Identified binding sites of", container = innergroup1)
+obj9<-glabel(a, container=innergroup1)
+obj10 <- gcombobox(c(output_1$resnames), container=group)
+innergroup2 <- ggroup(container = group)
+obj11 <- glabel("Identified binding sites of", container = innergroup2)
+obj12 <-glabel(b, container=innergroup2)
+obj13 <- gcombobox(c(output_2$resnames), container=group)
+innergroup3 <- ggroup(container = group)
+obj14 <- glabel("Identified binding sites of", container = innergroup3)
+obj15 <-glabel(c, container=innergroup3)
+obj16 <- gcombobox(c(output_3$resnames), container=group)
+innergroup4 <- ggroup(container = group)
+obj17 <- glabel("Identified binding sites of", container = innergroup4)
+obj18 <-glabel(d, container=innergroup4)
+obj19 <- gcombobox(c(output_4$resnames), container=group)
+innergroup5 <- ggroup(container = group)
+obj20 <- glabel("Identified binding sites of", container = innergroup5)
+obj21<- glabel(e, container=innergroup5)
+obj22 <- gcombobox(c(output_5$resnames), container=group)
+
+
 
 
 ##Model of GUI window - nice layout to emulate
