@@ -143,3 +143,39 @@ rownames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no
 colnames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5])
 rmsdvaluesbs
 
+
+
+
+
+a<-read.pdb("blast1_wholeprotein.pdb")
+b<-read.pdb("blast2_wholeprotein.pdb")
+c<-read.pdb("blast3_wholeprotein.pdb")
+d<-read.pdb("blast4_wholeprotein.pdb")
+e<-read.pdb("blast5_wholeprotein.pdb")
+aln1 <- struct.aln(pdb,a,write.pdb(pdb=NULL,xyz=a$xyz,file="Blast1input.pdb"))
+aln2<- struct.aln(pdb,b,write.pdb(pdb=NULL,xyz=b$xyz,file="Blast2input.pdb"))
+aln3 <- struct.aln(pdb,c,write.pdb(pdb=NULL,xyz=c$xyz,file="Blast3input.pdb"))
+aln4 <- struct.aln(pdb,d,write.pdb(pdb=NULL,xyz=d$xyz,file="Blast4input.pdb"))
+aln5 <- struct.aln(pdb,e,write.pdb(pdb=NULL,xyz=e$xyz,file="Blast5input.pdb"))
+A <- read.pdb("Blast1input.pdb")
+align <- struct.aln(A,b,write.pdb(pdb=NULL,xyz=b$xyz,file="Blastinputstep2.pdb"))
+B <- read.pdb("Blastinputstep2.pdb")
+align <- struct.aln(B,c,write.pdb(pdb=NULL,xyz=c$xyz,file="Blastinputstep3.pdb"))
+C <- read.pdb("Blastinputstep3.pdb")
+align <- struct.aln(C,d,write.pdb(pdb=NULL,xyz=d$xyz,file="Blastinputstep4.pdb"))
+D <- read.pdb("Blastinputstep4.pdb")
+align <- struct.aln(D,e,write.pdb(pdb=NULL,xyz=e$xyz,file="Allaligned.pdb"))
+
+
+
+
+
+core <- core.find(pdbs)
+col = rep("black", length(core$volume))
+col[core$volume < 2] = "pink"
+col[core$volume < 1] = "red"
+plot(core, col = col)
+core.inds <- print(core, vol = 1)
+write.pdb(xyz = pdbs$xyz[1, core.inds$xyz], file = "quick_core.pdb")
+xyz <- pdbfit(pdbs, core.inds)
+
