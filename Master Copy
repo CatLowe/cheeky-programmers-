@@ -9,16 +9,21 @@ win <- gwindow(title = "Analysing PDB structures",
 group <- ggroup(horizontal = FALSE, container=win)
 obj1 <- glabel("Type your PDB code here:", container = group)
 innergroup <- ggroup(container = group)
-obj2 <- gedit((input<-""), container=innergroup)
-obj3 <- gbutton( "Go", container = innergroup, 
-                handler = function( h, ... ) {
-       gmessage( svalue( obj2 ), title = (pdb<- read.pdb(input)) )
-   } )
-obj4 <- glabel("Identified binding sites of your PDB file:", container = group)
+obj2 <- gedit((file1<-""), container=innergroup)
+obj3<-addHandlerChanged(obj2, handler=function(...){
+  gbutton( "Go", container = innergroup, 
+           handler = function( h, ... ) {
+             gmessage( svalue( obj2 ), title = (pdb<- read.pdb(file1)))
+           } )
+})
+#Giving the user the identified binding sites of their PDB file
+obj4 <- glabel("Identified binding sites of your PDB file:",container = group)
 obj5 <- gcombobox(c(bs$resnames), container=group)
+#Giving the user the 5 directed random BLAST results of their PDB file
 obj6 <- glabel("BLAST results on your PDB file with an identity of 65<x>50, which will be compared to your PDB file:", container = group)
 obj7 <- glabel(c(no_chain), container=group)
 innergroup1 <- ggroup(container = group)
+#Giving the user the identified binding sites of the BLAST results of their PDB file
 obj8 <- glabel("Identified binding sites of", container = innergroup1)
 obj9<-glabel(a, container=innergroup1)
 obj10 <- gcombobox(c(output_1$resnames), container=group)
@@ -38,6 +43,8 @@ innergroup5 <- ggroup(container = group)
 obj20 <- glabel("Identified binding sites of", container = innergroup5)
 obj21<- glabel(e, container=innergroup5)
 obj22 <- gcombobox(c(output_5$resnames), container=group)
+
+
 
 
 
