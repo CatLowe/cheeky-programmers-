@@ -169,13 +169,8 @@ align <- struct.aln(D,e,write.pdb(pdb=NULL,xyz=e$xyz,file="Allaligned.pdb"))
 
 
 
-
-core <- core.find(pdbs)
-col = rep("black", length(core$volume))
-col[core$volume < 2] = "pink"
-col[core$volume < 1] = "red"
-plot(core, col = col)
-core.inds <- print(core, vol = 1)
-write.pdb(xyz = pdbs$xyz[1, core.inds$xyz], file = "quick_core.pdb")
-xyz <- pdbfit(pdbs, core.inds)
-
+aln <- struct.aln(pdb,a,write.pdbs=TRUE,outpath = "blast1input")
+aln2 <- struct.aln(pdb,b,write.pdbs=TRUE,outpath = "blast2input")
+aln3 <- struct.aln(pdb,c,write.pdbs=TRUE,outpath = "blast3input")
+aln4 <- struct.aln(pdb,d,write.pdbs=TRUE,outpath = "blast4input")
+aln5 <- struct.aln(pdb,e,write.pdbs=TRUE,outpath = "blast5input")
