@@ -1,118 +1,120 @@
-# require bio3d package
-install.packages(bio3d)
-#use function read.pdb to read a pdb file
-pdb <- read.pdb("1a52") # read G-protein structure
+#use function binding.resnames to get binding site resedue names from a protein
 
-#use function binding.site to identify a binding site within loaded pdb file
-bs <- binding.site(pdb)
-
-#use function print(bs$resnames) to print names of residues involved in indentified binding site
-print(bs$resnames) # residue names of identified binding site
-
-#Examples
-pdb <- read.pdb("1a52")
-bs <- binding.site(pdb)
-print(bs$resnames)
-
-pdb_1 <- read.pdb("1pph")
-bs_a <- binding.site(pdb_1)
-print(bs_a$resnames)
-
-pdb_2 <- read.pdb("3dfr")
-bs_b <- binding.site(pdb_2)
-print(bs$resnames)
-
-#select the binding site and trim the pdb file to just the residues in the binding site
-inds <- atom.select (pdb, resno = bs$resno)
-pdb3 <- trim.pdb(pdb, inds)
-
-#write new pdb file
-write.pdb(pdb3, file= "1bzm_bindingsite.pdb")
-
-#blast search pdb file
-blast_search <- blast.pdb(pdb)
-print(blast_search$hit.tbl)
-#Select the columns of data that we are extracting from the blast search data
-identity <- blast_search$hit.tbl$identity
-pdbid <- blast_search$hit.tbl$pdb.id
-#bind the two columns of data together
-result <- cbind(identity,pdbid)
-result
-
-#Limit the identity of the blast search to be <=60 and >=50, and just print these
-limit <- subset(result,identity<=60 & identity>=50)
-limit
-pdb_ids <- limit[,c("pdbid")]
-
-#if function for if original limit produces too small a sample size, increase limit size
-number <- length(pdb_ids)
-if (number > 5) {
-  rdm <-sample(pdb_ids,5)
-} else {
-  limit <- subset(result,identity<=65 & identity>=50)
-  pdb_ids <- limit[,c("pdbid")]
+binding_site <- function (protein, file_name) {
+  library(bio3d)
+  pdb <- read.pdb(protein)
+  #identify binding site residues within the pdb file
+  bs <-binding.site(pdb)
+  #select the binding site residues from the pdb file and trim pdb file
+  #in order to write a pdb file containing just the binding site
+  inds <- atom.select (pdb, resno = bs$resno)
+  pdb3 <- trim.pdb(pdb, inds)
+  write.pdb(pdb3, file= file_name)
+  #print a list of binding site residue names
+  return (bs$resnames)
 }
 
-#retrieve a random sample  of pdb files from limited selection
-#rdm <-sample(pdb_ids,4)
-#rdm
-#rewrite output to gain readable files
-no_chain <- gsub('.{2}$','',rdm)
-no_chain
-a<-no_chain[1]
-b<-no_chain[2]
-c<-no_chain[3]
-d<-no_chain[4]
-e<-no_chain[5]
+blast_limited <- function (protein, min = 50, max = 60){
+  if (missing(protein))
+    stop("blast: must supply 'pdb' object, i.e. a character string of 4")
+  library(bio3d)
+  #Load protein --------------------------------------------
+  pdb <- read.pdb(protein)
+  blast_search <- blast.pdb(pdb)
+  identity <- blast_search$hit.tbl$identity
+  pdbid <- blast_search$hit.tbl$pdb.id
+  result <- cbind(identity,pdbid)
+  #limit the identity of returned blast searches to between 50-60%
+  #this is so homologous sequences are selected instead of just
+  #similar sequences. An evolutionary relationship is implied and of
+  #interst to the function of this package
+  limit <- subset(result,identity<=(max) & identity>=(min))
+  pdb_ids <- limit[,c("pdbid")]
+  number <- length(pdb_ids)
+  # widen limit if sample size is too small -----------------------
+  if (number > 5) {
+    rdm <-sample(pdb_ids,5)
+  } else {
+    limit <- subset(result,identity<=(max + 5) & identity>=(min))
+    pdb_ids <- limit[,c("pdbid")]
+    rdm <- sample(pdb_ids,5)
+  }
+  # return data
+  return (rdm)
+}
 
-#read new files separate new files 
-output_files <- lapply (no_chain, read.pdb)
-
-output_file1 <- output_files[[1]]
-write.pdb(output_file1, file= "blast1_wholeprotein.pdb")
-
-output_file2 <- output_files[[2]]
-write.pdb(output_file2, file= "blast2_wholeprotein.pdb")
-
-output_file3 <- output_files[[3]]
-write.pdb(output_file3, file= "blast3_wholeprotein.pdb")
-
-output_file4 <- output_files[[4]]
-write.pdb(output_file4, file= "blast4_wholeprotein.pdb")
+blast_outputs <- function (rdm){
+  no_chain <- gsub('.{2}$','',rdm)
+  return (no_chain)
+}
 
 
-#find binding sites in new pdb files
-bs_1 <- lapply (output_files, binding.site)
+write.files <- function(no_chain, filename_1, filename_2, filename_3, filename_4, filename_5) {
+  library(bio3d)
+#split  and read separate pdb files -------------------------------------------------------------
+  a<-no_chain[1]
+  b<-no_chain[2]
+  c<-no_chain[3]
+  d<-no_chain[4]
+  e<-no_chain[5]
+  output_files1 <- read.pdb(a)
+  output_files2 <- read.pdb(b)
+  output_files3 <- read.pdb(c)
+  output_files4 <- read.pdb(d)
+  output_files5 <- read.pdb(e)
+  output_file1 <- output_files[[1]]
+# write pdb files ---------------------------------------------------------------------------------
+  write.pdb(output_file1, file= filename_1)
+  output_file2 <- output_files[[2]]
+  write.pdb(output_file2, file= filename_2)
+  output_file3 <- output_files[[3]]
+  write.pdb(output_file3, file= filename_3)
+  output_file4 <- output_files[[4]]
+  write.pdb(output_file4, file= filename_4)
+  output_file5 <- output_files[[5]]
+  write.pdb(output_file5, file= filename_5)
+# combine read pdb files ---------------------------------------------------------------------
+  output_files<- c(output_files1, output_files2, output_files3, output_files4, output_files5)
+  return (output_files)
+}
 
-#edit pdb files for each output to create new selection of files
-output_1 <- bs_1[[1]]
-bs_output_1 <- atom.select (pdb, resno= output_1$resno)
-pdb_output_1 <- trim.pdb(pdb, bs_output_1)
-write.pdb(pdb_output_1, file= "blast1_bindingsite.pdb")
+write.bs <- function (output_files) {
+#find binding site from pdb files ---------------------------------------------------------
+  bs_1 <- lapply (output_files, binding.site)
+# write bs files ---------------------------------------------------------------------------
+  output_1 <- bs_1[[1]]
+  bs_output_1 <- atom.select (output_files[[1]], resno= output_1$resno)
+  pdb_output_1 <- trim.pdb(output_files[[1]], bs_output_1)
+  write.pdb(pdb_output_1, file= "(blast1_bindingsite.pdb")
 
-output_2 <- bs_1[[2]]
-bs_output_2 <- atom.select (pdb, resno= output_2$resno)
-pdb_output_2 <- trim.pdb(pdb, bs_output_2)
-write.pdb(pdb_output_2, file= "blast2_bindingsite.pdb")
+  output_2 <- bs_1[[2]]
+  bs_output_2 <- atom.select (output_files[[2]], resno= output_2$resno)
+  pdb_output_2 <- trim.pdb(output_files[[2]], bs_output_2)
+  write.pdb(pdb_output_2, file= "blast2_bindingsite.pdb")
 
-output_3 <- bs_1[[3]]
-bs_output_3 <- atom.select (pdb, resno= output_3$resno)
-pdb_output_3 <- trim.pdb(pdb, bs_output_3)
-write.pdb(pdb_output_3, file= "blast3_bindingsite.pdb")
+  output_3 <- bs_1[[3]]
+  bs_output_3 <- atom.select (output_files[[3]], resno= output_3$resno)
+  pdb_output_3 <- trim.pdb(output_files[[3]], bs_output_3)
+  write.pdb(pdb_output_3, file= "blast3_bindingsite.pdb")
 
-output_4 <- bs_1[[4]]
-bs_output_4 <- atom.select (pdb, resno= output_4$resno)
-pdb_output_4 <- trim.pdb(pdb, bs_output_4)
-write.pdb(pdb_output_4, file= "blast4_bindingsite.pdb")
+  output_4 <- bs_1[[4]]
+  bs_output_4 <- atom.select (output_files[[4]], resno= output_4$resno)
+  pdb_output_4 <- trim.pdb(output_files[[4]], bs_output_4)
+  write.pdb(pdb_output_4, file= "blast4_bindingsite.pdb")
 
-output_5 <- bs_1[[5]]
-bs_output_5 <- atom.select (pdb, resno= output_5$resno)
-pdb_output_5 <- trim.pdb(pdb, bs_output_5)
-write.pdb(pdb_output_5, file= "blast5_bindingsite.pdb")
+  output_5 <- bs_1[[5]]
+  bs_output_5 <- atom.select (output_files[[5]], resno= output_5$resno)
+  pdb_output_5 <- trim.pdb(output_files[[5]], bs_output_5)
+  write.pdb(pdb_output_5, file= "blast5_bindingsite.pdb")
+# returns binding site files ----------------------------------------------------------------
+  return (bs_1)
+}
+
 
 
 #obtaining a matrix of rmsd values and labelling
-P <- "1a52_A"
+rmsd_matrix <- function (proteinchain, no_chain, rdm) {
+P <- proteinchain
 ids <- c(rdm, P)
 raw.files <- get.pdb(ids)
 files <- pdbsplit(raw.files, ids)
@@ -122,25 +124,36 @@ seqidentity(pdbs)
 rmsdvalues <-rmsd(pdbs, fit = TRUE)
 rownames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5], "POI")
 colnames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5], "POI")
-rmsdvalues
+return (rmsdvalues)
+}
+
 
 #obtaing RMSD values for binding site and labelling
 bsids<- c("blast1_bindingsite.pdb","blast2_bindingsite.pdb","blast3_bindingsite.pdb","blast4_bindingsite.pdb","blast5_bindingsite.pdb", "1bzm_bindingsite.pdb")
-raw.files_1 <- get.pdb(bsids)
-files_1 <- pdbsplit(raw.files_1, bsids)
-pdbs_1 <- pdbaln(bsids)
+rmsdbs_matrix <- function (bs_ids) {
+raw.files_1 <- get.pdb(bs_ids)
+files_1 <- pdbsplit(raw.files_1, bs_ids)
+pdbs_1 <- pdbaln(bs_ids)
 pdbs_1$id <- basename.pdb(pdbs_1$id)
 seqidentity(pdbs_1)
 rmsdvaluesbs <-rmsd(pdbs_1, fit = TRUE)
-rmsdvaluesbs
 rownames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5], "POI")
 colnames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5],"POI")
+return (rmsdvaluesbs)
+}
 
-plot(rmsdvalues[6,1:5], rmsdvaluesbs[6,1:5],
+
+
+plot_rmsd <- function (rmsdvalues, rmsdvaluesbs) {
+  jpeg(file = "C://Users//charlie//Documents//Programming3Dimages//Comparitive RMSD values of whole protein structure and binding site residues.jpeg")
+  plot <- plot(rmsdvalues[6,1:5], rmsdvaluesbs[6,1:5],
      main= "Comparitive RMSD values of whole protein structure and binding site residues",
      xlab= "RMSD values for whole protein superposition (Å)",
      ylab= "RMSD values for binding site superposition (Å)",
      col= "orange", pch = 19, cex = 1, lty = "solid", lwd = 6)
 text(rmsdvalues[6,1:5], rmsdvaluesbs[6,1:5], labels= c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5]), cex= 0.7, col = "blue")
-
+ dev.off()
+ dev.print(pdf, 'Comparitive RMSD values of whole protein structure and binding site residues.pdf')
+  return (plot)
+}
 
