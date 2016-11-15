@@ -39,3 +39,16 @@ binding_1<-trim.pdb(pdb,bsatoms_1)
 
 #write.pdb
 write.pdb(binding_1,file = "1SN2_binding_site.pdb")
+
+
+
+
+#FUNCTIONS
+limit.pdbids<-function(number)
+{if(number >5){rdm<-sample(pdb_ids,5)}
+  else{limit <- subset(result,identity<=65 & identity>=50)
+  pdb_ids <- limit[,c("pdbid")]
+  
+  }}
+pdb_ids1<limit.pdbids(pdbid)
+pdb_ids1  
