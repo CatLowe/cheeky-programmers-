@@ -7,16 +7,21 @@ win <- gwindow(title = "Analysing PDB structures",
                visible=TRUE, name=title,
                width = NULL, height = NULL, parent=NULL)
 group <- ggroup(horizontal = FALSE, container=win)
-obj1 <- glabel("Type your PDB code here:", container = group)
+obj1 <- glabel("Type your PDB code here and press Enter:", container = group)
 innergroup <- ggroup(container = group)
-obj2 <- gedit((file1<-(""), container=innergroup, label="Type your PDB code here:",
-              coerce.with=as.numeric, handler=function(h,...) {
-                file1 <- svalue(obj2)
-                  })
+obj2 <- gedit("", container=innergroup,label=file1,
+              handler=function(h,...) {
+              print(svalue(obj2))
+              })
+
+{(svalue(obj2))
+hi<-(svalue(obj2))
+hi}
+              
 obj3<-addHandlerChanged(obj2, handler=function(...){
   gbutton( "Go", container = innergroup, 
            handler = function( h, ... ) {
-             gmessage( svalue( obj2 ),title = (file1))
+             gmessage( svalue( obj2 ), (poi<-read.pdb(hi)))
            } )
 })
 #Giving the user the identified binding sites of their PDB file
