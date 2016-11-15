@@ -150,7 +150,6 @@ aln3 <- struct.aln(pdb,c,write.pdbs=TRUE,outpath = "blast3input",max.cycle=4)
 aln4 <- struct.aln(pdb,d,write.pdbs=TRUE,outpath = "blast4input",max.cycle=4)
 aln5 <- struct.aln(pdb,e,write.pdbs=TRUE,outpath = "blast5input",max.cycle=4)
 table <- data.frame(aln$rmsd,aln2$rmsd, aln3$rmsd, aln4$rmsd)
-table
 colnames(table) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4],no_chain[5])
 row.names(table) <-c("Mobile_1","Mobile_2","Mobile_3","Mobile_4","Mobile_5")
 table
