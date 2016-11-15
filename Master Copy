@@ -1,6 +1,8 @@
 #use function binding.resnames to get binding site resedue names from a protein
 
 binding_site <- function (protein, file_name) {
+  if (missing(file_name))
+    stop("binding_site: must supply file_name which includes file type as .pdb")
   library(bio3d)
   pdb <- read.pdb(protein)
   #identify binding site residues within the pdb file
