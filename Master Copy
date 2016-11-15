@@ -143,7 +143,11 @@ rownames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no
 colnames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5])
 rmsdvaluesbs
 
-
+a<-read.pdb("blast1_wholeprotein.pdb")
+b<-read.pdb("blast2_wholeprotein.pdb")
+c<-read.pdb("blast3_wholeprotein.pdb")
+d<-read.pdb("blast4_wholeprotein.pdb")
+e<-read.pdb("blast5_wholeprotein.pdb")
 aln <- struct.aln(pdb,a,write.pdbs=TRUE,outpath = no_chain[1],max.cycle=4)
 aln2 <- struct.aln(pdb,b,write.pdbs=TRUE,outpath = no_chain[2],max.cycle=4)
 aln3 <- struct.aln(pdb,c,write.pdbs=TRUE,outpath = no_chain[3],max.cycle=4)
