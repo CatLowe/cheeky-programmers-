@@ -1,5 +1,4 @@
 #use function binding.resnames to get binding site resedue names from a protein
-
 binding_site <- function (protein, file_name) {
   if (missing(file_name))
     stop("binding_site: must supply file_name which includes file type as .pdb")
@@ -19,7 +18,6 @@ binding_site <- function (protein, file_name) {
 blast_limited <- function (protein, min = 50, max = 60){
   if (missing(protein))
     stop("blast: must supply 'pdb' object, i.e. a character string of 4")
-  library(bio3d)
   #Load protein --------------------------------------------
   pdb <- read.pdb(protein)
   blast_search <- blast.pdb(pdb)
@@ -45,15 +43,27 @@ blast_limited <- function (protein, min = 50, max = 60){
   return (rdm)
 }
 
+
 blast_outputs <- function (rdm){
+  if (missing(rdm))
+    stop ("blast_output : need to input output from blast_limited function")
   no_chain <- gsub('.{2}$','',rdm)
   return (no_chain)
 }
 
-
-write.files <- function(no_chain, filename_1, filename_2, filename_3, filename_4, filename_5) {
-  library(bio3d)
-#split  and read separate pdb files -------------------------------------------------------------
+write_files <- function(no_chain, filename_1, filename_2, filename_3, filename_4, filename_5) {
+  if (missing(filename_1))
+    stop ("must inculde a file name in a character string")
+  if (missing(filename_2))
+    stop ("must inculde a file name in a character string")
+  if (missing(filename_3))
+    stop ("must inculde a file name in a character string")
+  if (missing(filename_4))
+    stop ("must inculde a file name in a character string")
+  if (missing(filename_5))
+    stop ("must inculde a file name in a character string")
+  if (missing(no_chain))
+    stop ("must inculde output from blast_outputs function")
   a<-no_chain[1]
   b<-no_chain[2]
   c<-no_chain[3]
@@ -65,7 +75,6 @@ write.files <- function(no_chain, filename_1, filename_2, filename_3, filename_4
   output_files4 <- read.pdb(d)
   output_files5 <- read.pdb(e)
   output_file1 <- output_files[[1]]
-# write pdb files ---------------------------------------------------------------------------------
   write.pdb(output_file1, file= filename_1)
   output_file2 <- output_files[[2]]
   write.pdb(output_file2, file= filename_2)
@@ -75,15 +84,14 @@ write.files <- function(no_chain, filename_1, filename_2, filename_3, filename_4
   write.pdb(output_file4, file= filename_4)
   output_file5 <- output_files[[5]]
   write.pdb(output_file5, file= filename_5)
-# combine read pdb files ---------------------------------------------------------------------
+
   output_files<- c(output_files1, output_files2, output_files3, output_files4, output_files5)
   return (output_files)
 }
 
-write.bs <- function (output_files) {
-#find binding site from pdb files ---------------------------------------------------------
+write_bs <- function (output_files) {
   bs_1 <- lapply (output_files, binding.site)
-# write bs files ---------------------------------------------------------------------------
+
   output_1 <- bs_1[[1]]
   bs_output_1 <- atom.select (output_files[[1]], resno= output_1$resno)
   pdb_output_1 <- trim.pdb(output_files[[1]], bs_output_1)
@@ -108,54 +116,52 @@ write.bs <- function (output_files) {
   bs_output_5 <- atom.select (output_files[[5]], resno= output_5$resno)
   pdb_output_5 <- trim.pdb(output_files[[5]], bs_output_5)
   write.pdb(pdb_output_5, file= "blast5_bindingsite.pdb")
-# returns binding site files ----------------------------------------------------------------
   return (bs_1)
 }
-
-
-
 #obtaining a matrix of rmsd values and labelling
 rmsd_matrix <- function (proteinchain, no_chain, rdm) {
-P <- proteinchain
-ids <- c(rdm, P)
-raw.files <- get.pdb(ids)
-files <- pdbsplit(raw.files, ids)
-pdbs <- pdbaln(files)
-pdbs$id <- basename.pdb(pdbs$id)
-seqidentity(pdbs)
-rmsdvalues <-rmsd(pdbs, fit = TRUE)
-rownames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5], "POI")
-colnames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5], "POI")
-return (rmsdvalues)
+  P <- no_chain
+  ids <- c(rdm, P)
+  raw.files <- get.pdb(ids)
+  files <- pdbsplit(raw.files, ids)
+  pdbs <- pdbaln(files)
+  pdbs$id <- basename.pdb(pdbs$id)
+  seqidentity(pdbs)
+  rmsdvalues <-rmsd(pdbs, fit = TRUE)
+  rownames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5], "POI")
+  colnames(rmsdvalues) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5], "POI")
+  return (rmsdvalues)
 }
-
 
 #obtaing RMSD values for binding site and labelling
-bsids<- c("blast1_bindingsite.pdb","blast2_bindingsite.pdb","blast3_bindingsite.pdb","blast4_bindingsite.pdb","blast5_bindingsite.pdb", "1bzm_bindingsite.pdb")
-rmsdbs_matrix <- function (bs_ids) {
-raw.files_1 <- get.pdb(bs_ids)
-files_1 <- pdbsplit(raw.files_1, bs_ids)
-pdbs_1 <- pdbaln(bs_ids)
-pdbs_1$id <- basename.pdb(pdbs_1$id)
-seqidentity(pdbs_1)
-rmsdvaluesbs <-rmsd(pdbs_1, fit = TRUE)
-rownames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5], "POI")
-colnames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5],"POI")
-return (rmsdvaluesbs)
+rmsdbs_matrix <- function (no_chain, file1, file2, file3, file4, file5, file6) {
+  bsids <- c(file1, file2, file3, file4, file5, file6)
+  raw.files_1 <- get.pdb(bsids)
+  files_1 <- pdbsplit(raw.files_1, bsids)
+  pdbs_1 <- pdbaln(bsids)
+  pdbs_1$id <- basename.pdb(pdbs_1$id)
+  seqidentity(pdbs_1)
+  rmsdvaluesbs <-rmsd(pdbs_1, fit = TRUE)
+  rownames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5], "POI")
+  colnames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5],"POI")
+  return (rmsdvaluesbs)
 }
 
-
-
-plot_rmsd <- function (rmsdvalues, rmsdvaluesbs) {
-  jpeg(file = "C://Users//charlie//Documents//Programming3Dimages//Comparitive RMSD values of whole protein structure and binding site residues.jpeg")
+plot_rmsd <- function (rmsdvalues, rmsdvaluesbs, filepath_name) {
+  if (missing(rmsdvalues))
+    stop ("rmsdvalues: must inculde numeric values")
+  if (missing(rmsdvaluesbs))
+    stop ("rmsdvaluesbs : must inculde numeric values")
+  if (missing(filepath_name))
+    stop ("must inculde a file path with filename in a character string")
+  jpeg(file = filepath_name, width = 700)
   plot <- plot(rmsdvalues[6,1:5], rmsdvaluesbs[6,1:5],
-     main= "Comparitive RMSD values of whole protein structure and binding site residues",
-     xlab= "RMSD values for whole protein superposition (Å)",
-     ylab= "RMSD values for binding site superposition (Å)",
-     col= "orange", pch = 19, cex = 1, lty = "solid", lwd = 6)
-text(rmsdvalues[6,1:5], rmsdvaluesbs[6,1:5], labels= c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5]), cex= 0.7, col = "blue")
- dev.off()
- dev.print(pdf, 'Comparitive RMSD values of whole protein structure and binding site residues.pdf')
+               main= "Comparitive RMSD values of whole protein structure and binding site residues",
+               xlab= "RMSD values for whole protein superposition (Å)",
+               ylab= "RMSD values for binding site superposition (Å)",
+               col= "orange", pch = 19, cex = 1, lty = "solid", lwd = 6)
+  text(rmsdvalues[6,1:5], rmsdvaluesbs[6,1:5], labels= c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5]), cex= 0.7, col = "blue")
+  dev.off()
   return (plot)
 }
 
