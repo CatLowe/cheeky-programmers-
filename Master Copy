@@ -1,3 +1,6 @@
+#requires gWidgets
+#requires gWidgetstcltk in particular as this works better on Windows
+install.packages("gWidgetstcltk")
 library(gWidgetstcltk)
 library(bio3d)
 
@@ -11,7 +14,7 @@ button <- gbutton("Go", container=innergroup, handler=function(h, ...) {
   poi <- read.pdb(svalue(edit))
   print('### Trying to print poi inside function ###')
   print(poi)
-
+  
   #use function binding.site to identify a binding site within loaded pdb file
   bs <- binding.site(poi)
   
@@ -19,8 +22,10 @@ button <- gbutton("Go", container=innergroup, handler=function(h, ...) {
   print(bs$resnames) # residue names of identified binding site
   
   #Giving the user the identified binding sites of their PDB file
-  obj4 <- glabel("Identified binding sites of your PDB file:",container = group)
+  obj4 <- glabel("Identified binding site residues of your PDB file:",container = group)
   obj5 <- gcombobox(c(bs$resnames), container=group)
+  obj5a<-glabel("Just a moment...", container=group)
+  
   
   #select the binding site and trim the pdb file to just the residues in the binding site
   inds <- atom.select (poi, resno = bs$resno)
@@ -42,6 +47,11 @@ button <- gbutton("Go", container=innergroup, handler=function(h, ...) {
   limit <- subset(result,identity<=60 & identity>=50)
   limit
   pdb_ids <- limit[,c("pdbid")]
+  aa<-rdm[1]
+  bb<-rdm[2]
+  cc<-rdm[3]
+  dd<-rdm[4]
+  ee<-rdm[5]
   
   #if function for if original limit produces too small a sample size, increase limit size
   number <- length(pdb_ids)
@@ -51,6 +61,11 @@ button <- gbutton("Go", container=innergroup, handler=function(h, ...) {
     limit <- subset(result,identity<=65 & identity>=50)
     pdb_ids <- limit[,c("pdbid")]
   }
+  
+  #Giving the user the 5 directed random BLAST results of their PDB file
+  obj6 <- glabel("BLAST results on your PDB file with an identity of 65<x>50 compared to your protein-of-interest:", container = group)
+  obj7 <- glabel(c(rdm), container=group)
+  obj7a<-glabel("...and another moment, patience is a virtue...", container=group)
   
   #retrieve a random sample  of pdb files from limited selection
   #rdm <-sample(pdb_ids,4)
@@ -64,10 +79,6 @@ button <- gbutton("Go", container=innergroup, handler=function(h, ...) {
   d<-no_chain[4]
   e<-no_chain[5]
   
-  #Giving the user the 5 directed random BLAST results of their PDB file
-  obj6 <- glabel("BLAST results on your PDB file with an identity of 65<x>50 compared to your protein-of-interest:", container = group)
-  obj7 <- glabel(c(no_chain), container=group)
-
   #read new files separate new files
   output_files <- lapply (no_chain, read.pdb)
   
@@ -115,23 +126,24 @@ button <- gbutton("Go", container=innergroup, handler=function(h, ...) {
   
   innergroup1 <- ggroup(container = group)
   #Giving the user the identified binding sites of the BLAST results of their PDB file
-  obj8 <- glabel("Identified binding sites of", container = innergroup1)
-  obj9<-glabel(a, container=innergroup1)
+  obj8 <- glabel("Identified binding site residues of", container = innergroup1)
+  obj9<-glabel(aa, container=innergroup1)
   obj10 <- gcombobox(c(output_1$resnames), container=group)
   innergroup2 <- ggroup(container = group)
-  obj11 <- glabel("Identified binding sites of", container = innergroup2)
-  obj12 <-glabel(b, container=innergroup2)
+  obj11 <- glabel("Identified binding site residues of", container = innergroup2)
+  obj12 <-glabel(bb, container=innergroup2)
   obj13 <- gcombobox(c(output_2$resnames), container=group)
   innergroup3 <- ggroup(container = group)
-  obj14 <- glabel("Identified binding sites of", container = innergroup3)
-  obj15 <-glabel(c, container=innergroup3)
+  obj14 <- glabel("Identified binding sites residues of", container = innergroup3)
+  obj15 <-glabel(cc, container=innergroup3)
   obj16 <- gcombobox(c(output_3$resnames), container=group)
   innergroup4 <- ggroup(container = group)
-  obj17 <- glabel("Identified binding sites of", container = innergroup4)
-  obj18 <-glabel(d, container=innergroup4)
+  obj17 <- glabel("Identified binding site residues of", container = innergroup4)
+  obj18 <-glabel(dd, container=innergroup4)
   obj19 <- gcombobox(c(output_4$resnames), container=group)
   innergroup5 <- ggroup(container = group)
-  obj20 <- glabel("Identified binding sites of", container = innergroup5)
-  obj21<- glabel(e, container=innergroup5)
+  obj20 <- glabel("Identified binding site residues of", container = innergroup5)
+  obj21<- glabel(ee, container=innergroup5)
   obj22 <- gcombobox(c(output_5$resnames), container=group)
+  obj23 <- gtable(table, container = gwindow())
 })
