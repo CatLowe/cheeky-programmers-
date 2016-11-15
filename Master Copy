@@ -94,6 +94,9 @@ button <- gbutton("Go", container=innergroup, handler=function(h, ...) {
   output_file4 <- output_files[[4]]
   write.pdb(output_file4, file= "blast4_wholeprotein.pdb")
   
+  output_file5 <- output_files[[5]]
+  write.pdb(output_file5, file= "blast5_wholeprotein.pdb")
+  
   
   #find binding sites in new pdb files
   bs_1 <- lapply (output_files, binding.site)
