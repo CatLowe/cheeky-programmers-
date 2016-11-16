@@ -1,11 +1,11 @@
-startGUI <- function () {
+overall <- function () {
 binding_site ()
 blast_limited ()
 blast_output ()
 write_files ()
 write_bs ()
-rmsd_matirx ()
-rmsdbs_matirx ()
+rmsd_matrix ()
+rmsdbs_matrix ()
 }
 
 
