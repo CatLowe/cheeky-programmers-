@@ -1,3 +1,14 @@
+startGUI <- function () {
+binding_site ()
+blast_limited ()
+blast_output ()
+write_files ()
+write_bs ()
+rmsd_matirx ()
+rmsdbs_matirx ()
+}
+
+
 #use function binding.resnames to get binding site resedue names from a protein
 binding_site <- function (protein, file_name) {
   if (missing(file_name))
