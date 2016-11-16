@@ -143,31 +143,22 @@ rownames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no
 colnames(rmsdvaluesbs) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4], no_chain[5])
 rmsdvaluesbs
 
-a<-read.pdb("blast1_wholeprotein.pdb")
-b<-read.pdb("blast2_wholeprotein.pdb")
-c<-read.pdb("blast3_wholeprotein.pdb")
-d<-read.pdb("blast4_wholeprotein.pdb")
-e<-read.pdb("blast5_wholeprotein.pdb")
-aln <- struct.aln(pdb,a,write.pdbs=TRUE,outpath = no_chain[1],max.cycle=4)
-aln2 <- struct.aln(pdb,b,write.pdbs=TRUE,outpath = no_chain[2],max.cycle=4)
-aln3 <- struct.aln(pdb,c,write.pdbs=TRUE,outpath = no_chain[3],max.cycle=4)
-aln4 <- struct.aln(pdb,d,write.pdbs=TRUE,outpath = no_chain[4],max.cycle=4)
-aln5 <- struct.aln(pdb,e,write.pdbs=TRUE,outpath = no_chain[5],max.cycle=4)
 
-table <- data.frame(aln$rmsd,aln2$rmsd, aln3$rmsd, aln4$rmsd,aln5$rmsd)
-colnames(table) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4],no_chain[5])
-row.names(table) <-c("Mobile_1","Mobile_2","Mobile_3","Mobile_4","Mobile_5")
-table
 #aligns protein of interest with the blast searches and saves them into directory files. 
-poialign <- function(filename_1,filename_2,filename_3,filename_4,filename_5,no_chain,pdb){
-  a1<-read.pdb(filename_1)
-  b1<-read.pdb(filename_2)
-  c1<-read.pdb(filename_3)
-  d1<-read.pdb(filename_4)
-  e1 <- read.pdb(filename_5)
-  aln <- struct.aln(pdb,a1,write.pdbs=TRUE,outpath = no_chain[1],max.cycle=4)
-  aln2 <- struct.aln(pdb,b1,write.pdbs=TRUE,outpath = no_chain[2],max.cycle=4)
-  aln3 <- struct.aln(pdb,c1,write.pdbs=TRUE,outpath = no_chain[3],max.cycle=4)
-  aln4 <- struct.aln(pdb,d1,write.pdbs=TRUE,outpath = no_chain[4],max.cycle=4)
-  aln5 <- struct.aln(pdb,e1,write.pdbs=TRUE,outpath = no_chain[5],max.cycle=4)
+poi.align <- function(filename1, filename2,filename3,filename4,filename5,no_chain,pdb){
+a<-read.pdb(filename1)
+b<-read.pdb(filename2)
+c<-read.pdb(filename3)
+d<-read.pdb(filename4)
+e<-read.pdb(filename5)
+aln <- struct.aln(pdb,a,write.pdbs=TRUE,outpath = no_chain[1],max.cycle=3)
+aln2 <- struct.aln(pdb,b,write.pdbs=TRUE,outpath = no_chain[2],max.cycle=3)
+aln3 <- struct.aln(pdb,c,write.pdbs=TRUE,outpath = no_chain[3],max.cycle=3)
+aln4 <- struct.aln(pdb,d,write.pdbs=TRUE,outpath = no_chain[4],max.cycle=3)
+aln5 <- struct.aln(pdb,e,write.pdbs=TRUE,outpath = no_chain[5],max.cycle=3)
+table <- data.frame(aln$rmsd,aln2$rmsd,aln3$rmsd,aln4$rmsd,aln5$rmsd)
+colnames(table) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4],no_chain[5])
+row.names(table) <-c("Initial","Mobile_1","Mobile_2","Mobile_3")
+return(table)
 }
+
