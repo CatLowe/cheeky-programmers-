@@ -158,7 +158,7 @@ table <- data.frame(aln$rmsd,aln2$rmsd, aln3$rmsd, aln4$rmsd,aln5$rmsd)
 colnames(table) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4],no_chain[5])
 row.names(table) <-c("Mobile_1","Mobile_2","Mobile_3","Mobile_4","Mobile_5")
 table
-
+#aligns protein of interest with the blast searches and saves them into directory files. 
 poialign <- function(filename_1,filename_2,filename_3,filename_4,filename_5,no_chain,pdb){
   a1<-read.pdb(filename_1)
   b1<-read.pdb(filename_2)
