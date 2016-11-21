@@ -213,7 +213,7 @@ button <- gbutton( "Go", container=group, handler= function(h,...) {
 
   #Giving the user the 5 directed random BLAST results of their PDB file
   obj6 <- glabel("BLAST results on your PDB file with an identity of 65<x>50 compared to your protein-of-interest:", container = group)
-  obj7 <- glabel(c(no_chain), container=group)
+  obj7 <- glabel(c(rdm), container=group)
   label1 <- glabel("Input file names and file type for your BLAST results which will be saved in your working directory (e.g. 1x76.pdb), then press Go:", container=group)
   innergroup0 <- ggroup(container = group)
   userfilename1 <- gedit(container=innergroup0)
