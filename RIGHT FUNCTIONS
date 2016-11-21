@@ -83,35 +83,35 @@ write_files <- function(no_chain, filename_1, filename_2, filename_3, filename_4
   write.pdb(output_file4, file= filename_4)
   output_file5 <- output_files5
   write.pdb(output_file5, file= filename_5)
-
+  
   output_files<- lapply(no_chain, read.pdb)
   return (output_files)
 }
 
 write_bs <- function (output_files) {
-
+  
   bs_1 <- lapply (output_files, binding.site)
-
+  
   output_1 <- bs_1[[1]]
   bs_output_1 <- atom.select (output_files[[1]], resno= output_1$resno)
   pdb_output_1 <- trim.pdb(output_files[[1]], bs_output_1)
-  write.pdb(pdb_output_1, file= "(blast1_bindingsite.pdb")
-
+  write.pdb(pdb_output_1, file= "blast1_bindingsite.pdb")
+  
   output_2 <- bs_1[[2]]
   bs_output_2 <- atom.select (output_files[[2]], resno= output_2$resno)
   pdb_output_2 <- trim.pdb(output_files[[2]], bs_output_2)
   write.pdb(pdb_output_2, file= "blast2_bindingsite.pdb")
-
+  
   output_3 <- bs_1[[3]]
   bs_output_3 <- atom.select (output_files[[3]], resno= output_3$resno)
   pdb_output_3 <- trim.pdb(output_files[[3]], bs_output_3)
   write.pdb(pdb_output_3, file= "blast3_bindingsite.pdb")
-
+  
   output_4 <- bs_1[[4]]
   bs_output_4 <- atom.select (output_files[[4]], resno= output_4$resno)
   pdb_output_4 <- trim.pdb(output_files[[4]], bs_output_4)
   write.pdb(pdb_output_4, file= "blast4_bindingsite.pdb")
-
+  
   output_5 <- bs_1[[5]]
   bs_output_5 <- atom.select (output_files[[5]], resno= output_5$resno)
   pdb_output_5 <- trim.pdb(output_files[[5]], bs_output_5)
@@ -146,7 +146,7 @@ rmsdbs_matrix <- function (no_chain, file1, file2, file3, file4, file5, file6) {
   return (rmsdvaluesbs)
 }
 
-plot_rmsd <- function (rmsdvalues, rmsdvaluesbs, filepath_name) {
+plot_rmsd <- function (rmsdvalues, rmsdvaluesbs, filepath_name, no_chain) {
   if (missing(rmsdvalues))
     stop ("rmsdvalues: must inculde numeric values")
   if (missing(rmsdvaluesbs))
@@ -179,5 +179,107 @@ poi_align <- function(filename1, filename2,filename3,filename4,filename5,no_chai
   table <- data.frame(aln$rmsd,aln2$rmsd,aln3$rmsd,aln4$rmsd,aln5$rmsd)
   colnames(table) <-c(no_chain[1], no_chain[2],no_chain[3], no_chain[4],no_chain[5])
   row.names(table) <-c("Initial","Mobile_1","Mobile_2","Mobile_3")
+  table<-cbind(rownames(table),table)
+  colnames(table)[1]<-"Cycle number"
   return(table)
 }
+
+
+GUI_HomologyCompare <- function (){
+
+win <- gwindow(title = "Analysing PDB structures")
+group <- ggroup(horizontal = FALSE, container=win)
+label <- glabel("Type your PDB code here:", container=group)
+pdbfileedit <- gedit(container=group)
+label <- glabel("Input the PDB id with chain of your PDB file you would like to assess (e.g. 1A52_A) and press Go:", container=group)
+userchainname <- gedit(container=group)
+
+button <- gbutton( "Go", container=group, handler= function(h,...) {
+  poi <- (svalue(pdbfileedit))
+
+  poi_bindingsite <- binding_site(poi, "POIb.pdb")
+  chainname <-(svalue(userchainname))
+
+  #Giving the user the identified binding sites of their PDB file
+  obj4 <- glabel("Identified binding site residues of your PDB file:",container = group)
+  obj5 <- gcombobox(c(poi_bindingsite), container=group)
+  obj5a<-glabel("Just a moment...", container=group)
+
+  rdm <- blast_limited(poi)
+
+
+  no_chain <- blast_outputs(rdm)
+
+
+  #Giving the user the 5 directed random BLAST results of their PDB file
+  obj6 <- glabel("BLAST results on your PDB file with an identity of 65<x>50 compared to your protein-of-interest:", container = group)
+  obj7 <- glabel(c(no_chain), container=group)
+  label1 <- glabel("Input file names and file type for your BLAST results which will be saved in your working directory (e.g. 1x76.pdb), then press Go:", container=group)
+  innergroup0 <- ggroup(container = group)
+  userfilename1 <- gedit(container=innergroup0)
+  userfilename2 <- gedit(container=innergroup0)
+  userfilename3 <- gedit(container=innergroup0)
+  userfilename4 <- gedit(container=innergroup0)
+  userfilename5 <- gedit(container=innergroup0)
+
+  button1 <- gbutton ( "Go", container=group, handler=function(h,...){
+    filename_1<-(svalue(userfilename1))
+    filename_2<-(svalue(userfilename2))
+    filename_3<-(svalue(userfilename3))
+    filename_4<-(svalue(userfilename4))
+    filename_5<-(svalue(userfilename5))
+
+    obj7a<-glabel("...and another moment, patience is a virtue...", container=group)
+    output_files <- write_files(no_chain, filename_1, filename_2, filename_3, filename_4, filename_5)
+    bs_1 <- write_bs(output_files)
+
+    innergroup1 <- ggroup(container = group)
+    #Giving the user the identified binding sites of the BLAST results of their PDB file
+    obj8 <- glabel("Identified binding site residues of", container = innergroup1)
+    obj9<-glabel(no_chain[1], container=innergroup1)
+    obj10 <- gcombobox(c(bs_1[[1]]$resnames), container=group)
+    innergroup2 <- ggroup(container = group)
+    obj11 <- glabel("Identified binding site residues of", container = innergroup2)
+    obj12 <-glabel(no_chain[2], container=innergroup2)
+    obj13 <- gcombobox(c(bs_1[[2]]$resnames), container=group)
+    innergroup3 <- ggroup(container = group)
+    obj14 <- glabel("Identified binding sites residues of", container = innergroup3)
+    obj15 <-glabel(no_chain[3], container=innergroup3)
+    obj16 <- gcombobox(c(bs_1[[3]]$resnames), container=group)
+    innergroup4 <- ggroup(container = group)
+    obj17 <- glabel("Identified binding site residues of", container = innergroup4)
+    obj18 <-glabel(no_chain[4], container=innergroup4)
+    obj19 <- gcombobox(c(bs_1[[4]]$resnames), container=group)
+    innergroup5 <- ggroup(container = group)
+    obj20 <- glabel("Identified binding site residues of", container = innergroup5)
+    obj21<- glabel(no_chain[5], container=innergroup5)
+    obj22 <- gcombobox(c(bs_1[[5]]$resnames), container=group)
+    obj22a<-glabel("...and just one more moment...", container=group)
+
+
+    chainname <-(svalue(userchainname))
+    print (chainname)
+    print (no_chain)
+    print (rdm)
+    rmsdvalues <- rmsd_matrix(proteinchain = chainname, no_chain, rdm)
+
+
+    rmsdvaluesbs <- rmsdbs_matrix(no_chain, "blast1_bindingsite.pdb", "blast2_bindingsite.pdb", "blast3_bindingsite.pdb", "blast4_bindingsite.pdb", "blast5_bindingsite.pdb", "POIb.pdb")
+
+
+    plot <- plot_rmsd(rmsdvalues, rmsdvaluesbs, filepath_name = "RMSDvaluesplot.jpeg" , no_chain)
+
+
+    align_table <- poi_align(filename_1, filename_2, filename_3, filename_4, filename_5, no_chain, poi)
+
+    newwin<-gwindow(title= "Table of RMSD values for your PDB file against BLAST searches")
+    newgroup <- ggroup(horizontal = FALSE, container=newwin)
+    obj23<-glabel("The root mean squared deviation (RMSD) values between your protein-of-interest and your BLAST results in cycles of superposition.", container=newgroup)
+    obj25 <- gtable(align_table, index=TRUE, container = newgroup)
+    obj24<-glabel("The RMSD values are calculated across the entire protein. These values were calculated in refinement cycles. Each cycle the protein atoms are fit together differently in order to give smaller RMSD values.", container=newgroup)
+    obj26<-glabel("A graph showing the Comparitive RMSD values of whole protein structure and binding site residues has been stored locally. It can be found in your working directory.", container=newgroup)
+    obj27<-glabel("Folders containing structure superpositions from each cycle for each protein can also be found in your working directory. These can be viewed using software such as Pymol or CCP4MG.", container=newgroup)
+
+  })})
+}
+
