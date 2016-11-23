@@ -8,6 +8,15 @@ test_that("binding_site is string of characters", {
   expect_equal(class(binding_site("")), object=string)
 })
   #all binding sites must be made of amino acids
+#or
+
+library(HomologyCompare)
+context("Binding site")
+
+test_that("binding_Site is string", {
+  expect_equal(Binding_site("class"), string)
+})
+
 
 #blast_limited.rd    
 context("pdb file results with an E value of 50 - 60 (ish.)")
