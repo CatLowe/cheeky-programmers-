@@ -1,0 +1,42 @@
+#use devtools::test()??
+#e.g.
+library(HomologyCompare)
+
+#binding_Site.rd
+context("binding site identification")
+test_that("binding_site is string of characters", {
+  expect_equal(class(binding_site("")), object=string)
+})
+  #all binding sites must be made of amino acids
+
+#blast_limited.rd    
+context("pdb file results with an E value of 50 - 60 (ish.)")
+test_that("blast_limited has 5 values", {
+  expect_equal(5, 5)
+})
+
+#blast_outputs.rd
+context("Check that outputs are pdb files (4 character code)")
+
+#GUI_HomologyCompare.Rd
+context("Has to open the GUI detailed driven by gWidgetstcltk or ???")
+
+#plot_RMSD
+context("???")
+
+#poi_align
+context("????")
+
+#rmsd_matrix
+context("creates a graph that has colours blue and yellow")
+
+#rmsdbs_matrix
+context("dunno")
+
+#write_bs
+context("function must create a file with .pdb filetype that is smaller than write_files")
+
+#write_files
+context("creates a file with .pdb filetype")
+
+
